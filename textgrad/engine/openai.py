@@ -174,21 +174,24 @@ class ChatOpenAI(BaseOpenAIEngine):
 
         super().__init__(cache_path, system_prompt, model_string, is_multimodal)
 
-        self.base_url = base_url
+        proxy_base_url = os.getenv("PROXY_LLM_BASE_URL")
+        self.base_url = proxy_base_url or base_url
 
-        if not base_url:
-            if os.getenv("OPENAI_API_KEY") is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+
+        if not self.base_url:
+            if api_key is None:
                 raise ValueError(
                     "Please set the OPENAI_API_KEY environment variable if you'd like to use OpenAI models."
                 )
-
-            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        elif base_url and base_url == OLLAMA_BASE_URL:
-            self.client = OpenAI(base_url=base_url, api_key="ollama")
+            self.client = OpenAI(api_key=api_key)
         else:
-            raise ValueError(
-                "Invalid base URL provided. Please use the default OLLAMA base URL or None."
-            )
+            # Fall back to a placeholder key when pointing at a compatible local proxy.
+            if self.base_url == OLLAMA_BASE_URL:
+                api_key = api_key or "ollama"
+            else:
+                api_key = api_key or "proxy"
+            self.client = OpenAI(base_url=self.base_url, api_key=api_key)
 
 
 class AzureChatOpenAI(BaseOpenAIEngine):

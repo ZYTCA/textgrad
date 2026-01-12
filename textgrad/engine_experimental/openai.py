@@ -23,7 +23,11 @@ class OpenAIEngine(EngineLM):
     def __init__(self, model_string: str,
                  system_prompt: str = DEFAULT_SYSTEM_PROMPT,
                  is_multimodal: bool = False,
-                 cache: Union[dc.Cache, bool] = False):
+                 cache: Union[dc.Cache, bool] = False,
+                 base_url: str = None):
+
+        proxy_base_url = os.getenv("PROXY_LLM_BASE_URL")
+        self.base_url = proxy_base_url or base_url
 
         self.validate()
 
@@ -34,11 +38,16 @@ class OpenAIEngine(EngineLM):
             cache=cache
         )
 
-        self.client = OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY")
-        )
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not self.base_url:
+            self.client = OpenAI(api_key=api_key)
+        else:
+            api_key = api_key or "proxy"
+            self.client = OpenAI(base_url=self.base_url, api_key=api_key)
 
     def validate(self) -> None:
+        if self.base_url:
+            return
         if os.getenv("OPENAI_API_KEY") is None:
             raise ValueError(
                 "Please set the OPENAI_API_KEY environment variable if you'd like to use OpenAI models.")
@@ -105,5 +114,3 @@ class OpenAICompatibleEngine(OpenAIEngine):
                 is_multimodal=is_multimodal,
                 cache=cache
             )
-
-

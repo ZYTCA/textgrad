@@ -62,11 +62,45 @@ def test_variable_object_passing():
 
 # Test the OpenAI engine initialization
 def test_openai_engine():
-    with pytest.raises(ValueError):
-        engine = ChatOpenAI()
+    proxy_backup = os.environ.pop("PROXY_LLM_BASE_URL", None)
+    api_key_backup = os.environ.pop("OPENAI_API_KEY", None)
+    try:
+        with pytest.raises(ValueError):
+            ChatOpenAI()
 
-    os.environ['OPENAI_API_KEY'] = "fake_key"
-    engine = ChatOpenAI()
+        os.environ["OPENAI_API_KEY"] = "fake_key"
+        ChatOpenAI()
+    finally:
+        if proxy_backup is not None:
+            os.environ["PROXY_LLM_BASE_URL"] = proxy_backup
+        else:
+            os.environ.pop("PROXY_LLM_BASE_URL", None)
+
+        if api_key_backup is not None:
+            os.environ["OPENAI_API_KEY"] = api_key_backup
+        else:
+            os.environ.pop("OPENAI_API_KEY", None)
+
+
+def test_openai_engine_with_proxy_base_url():
+    proxy_backup = os.environ.get("PROXY_LLM_BASE_URL")
+    api_key_backup = os.environ.get("OPENAI_API_KEY")
+    try:
+        os.environ["PROXY_LLM_BASE_URL"] = "http://127.0.0.1:9080/v1"
+        os.environ.pop("OPENAI_API_KEY", None)
+
+        engine = ChatOpenAI()
+        assert engine.base_url == "http://127.0.0.1:9080/v1"
+    finally:
+        if proxy_backup is not None:
+            os.environ["PROXY_LLM_BASE_URL"] = proxy_backup
+        else:
+            os.environ.pop("PROXY_LLM_BASE_URL", None)
+
+        if api_key_backup is not None:
+            os.environ["OPENAI_API_KEY"] = api_key_backup
+        else:
+            os.environ.pop("OPENAI_API_KEY", None)
 
 
 def test_set_backward_engine():
