@@ -79,5 +79,11 @@ def get_engine(engine_name: str, **kwargs) -> EngineLM:
         from .groq import ChatGroq
         engine_name = engine_name.replace("groq-", "")
         return ChatGroq(model_string=engine_name, **kwargs)
+    elif "medgemma" in engine_name.lower():
+        from .medgemma import ChatMedGemma
+        if engine_name.lower() == "medgemma":
+             return ChatMedGemma(**kwargs)
+        else:
+             return ChatMedGemma(model_string=engine_name, **kwargs)
     else:
         raise ValueError(f"Engine {engine_name} not supported")
