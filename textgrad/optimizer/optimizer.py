@@ -215,7 +215,7 @@ class TextualGradientDescentwithMomentum(Optimizer):
         # Each item in the momentum storage will include past value and the criticism
         self.momentum_storage = [[] for _ in range(len(parameters))]
         self.momentum_window = momentum_window
-        self.do_momentum = True
+        self.do_momentum = False
         self.constraints = constraints if constraints is not None else []
         self.do_constrained = (len(self.constraints) > 0)
         self.optimizer_system_prompt = optimizer_system_prompt.format(new_variable_start_tag=new_variable_tags[0], new_variable_end_tag=new_variable_tags[1])

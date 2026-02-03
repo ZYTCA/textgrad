@@ -18,6 +18,7 @@ __MULTIMODAL_ENGINES__ = ["gpt-4-turbo",
                           "claude-3-sonnet-20240229",
                           "claude-3-haiku-20240307",
                           "gpt-4-turbo-2024-04-09",
+                          "gpt-5-mini",
                           ]
 
 def _check_if_multimodal(engine_name: str):
@@ -50,6 +51,12 @@ def get_engine(engine_name: str, **kwargs) -> EngineLM:
     elif (("gpt-4" in engine_name) or ("gpt-3.5" in engine_name)):
         from .openai import ChatOpenAI
         return ChatOpenAI(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)
+    elif "gpt-5" in engine_name.lower():
+        from .gpt5 import ChatGPT5
+        if engine_name.lower() == "gpt-5":
+             return ChatGPT5(is_multimodal=_check_if_multimodal(engine_name), **kwargs)
+        else:
+             return ChatGPT5(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)
     elif "claude" in engine_name:
         from .anthropic import ChatAnthropic
         return ChatAnthropic(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)

@@ -420,7 +420,7 @@ class LLMCall_with_in_context_examples(LLMCall):
             backward_prompt = LLMCall_with_in_context_examples._construct_llm_chain_backward_prompt(backward_info)
 
             logger.info(f"_backward_through_llm prompt", extra={"_backward_through_llm": backward_prompt})
-            gradient_value = backward_engine(backward_prompt, system_prompt=BACKWARD_SYSTEM_PROMPT, max_tokens=512)
+            gradient_value = backward_engine(backward_prompt, system_prompt=BACKWARD_SYSTEM_PROMPT, max_tokens=1000)
             logger.info(f"_backward_through_llm gradient", extra={"_backward_through_llm": gradient_value})
             
             var_gradients = Variable(value=gradient_value, role_description=f"feedback to {variable.get_role_description()}")
@@ -490,7 +490,7 @@ class LLMCall_with_in_context_examples(LLMCall):
             backward_prompt = LLMCall_with_in_context_examples._construct_llm_base_backward_prompt(backward_info)
             
             logger.info(f"_backward_through_llm prompt", extra={"_backward_through_llm": backward_prompt})
-            gradient_value = backward_engine(backward_prompt, system_prompt=BACKWARD_SYSTEM_PROMPT, max_tokens=512)
+            gradient_value = backward_engine(backward_prompt, system_prompt=BACKWARD_SYSTEM_PROMPT, max_tokens=1000)
             logger.info(f"_backward_through_llm gradient", extra={"_backward_through_llm": gradient_value})
 
             conversation = CONVERSATION_TEMPLATE.format(**backward_info)

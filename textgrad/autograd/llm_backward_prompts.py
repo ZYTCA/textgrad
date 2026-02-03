@@ -18,7 +18,7 @@ BACKWARD_SYSTEM_PROMPT = (
     "Only provide strategies, explanations, and methods to change in the variable. DO NOT propose a new version of the variable, that will be the job of the optimizer. Your only job is to send feedback and criticism (compute 'gradients'). "
     "For instance, feedback can be in the form of 'Since language models have the X failure mode...', 'Adding X can fix this error because...', 'Removing X can improve the objective function because...', 'Changing X to Y would fix the mistake ...', that gets at the downstream objective.\n"
     "If a variable is already working well (e.g. the objective function is perfect, an evaluation shows the response is accurate), you should not give feedback.\n"
-    "IMPORTANT: Be extremely concise. Do not use filler words. Limit response to 2-3 sentences.\n"
+    "IMPORTANT: Be extremely concise. Do not use filler words. Limit response to 4-5 sentences.\n"
     f"{GLOSSARY_TEXT_BACKWARD}")
 
 # First part of the prompt for the llm backward function
