@@ -14,7 +14,7 @@ class ChatGPT5(BaseOpenAIEngine):
 
     def __init__(
         self,
-        model_string: str = "gpt-5-mini",
+        model_string: str = "gpt-5-nano",
         system_prompt: str = DEFAULT_SYSTEM_PROMPT,
         is_multimodal: bool = False,
         **kwargs,

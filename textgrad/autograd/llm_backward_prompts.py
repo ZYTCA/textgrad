@@ -77,6 +77,7 @@ After your reasoning, provide your feedback.
 - DO NOT propose a complete rewritten version of the variable (the optimizer does that).
 - Your gradient must be highly specific, actionable, and grounded in the input context.
 - Limit the final gradient to 4-5 concise sentences.
+- Limit the total output to 800 words
 
 <scratchpad>
 (Your step-by-step reasoning for Path B failures goes here)

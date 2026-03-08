@@ -13,12 +13,17 @@ __ENGINE_NAME_SHORTCUTS__ = {
 # Any better way to do this?
 __MULTIMODAL_ENGINES__ = ["gpt-4-turbo",
                           "gpt-4o",
+                          "gpt-4.1",
+                          "gpt-4.1-mini",
+                          "gpt-4.1-nano",
+                          "gpt-5",
+                          "gpt-5-mini",
+                          "gpt-5-nano",
                           "claude-3-5-sonnet-20240620",
                           "claude-3-opus-20240229",
                           "claude-3-sonnet-20240229",
                           "claude-3-haiku-20240307",
                           "gpt-4-turbo-2024-04-09",
-                          "gpt-5-mini",
                           ]
 
 def _check_if_multimodal(engine_name: str):
@@ -48,15 +53,12 @@ def get_engine(engine_name: str, **kwargs) -> EngineLM:
         # remove engine_name "azure-" prefix
         engine_name = engine_name[6:]
         return AzureChatOpenAI(model_string=engine_name, **kwargs)
+    elif "gpt-5" in engine_name.lower() or "gpt-4.1" in engine_name.lower():
+        from .gpt5 import ChatGPT5
+        return ChatGPT5(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)
     elif (("gpt-4" in engine_name) or ("gpt-3.5" in engine_name)):
         from .openai import ChatOpenAI
         return ChatOpenAI(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)
-    elif "gpt-5" in engine_name.lower():
-        from .gpt5 import ChatGPT5
-        if engine_name.lower() == "gpt-5":
-             return ChatGPT5(is_multimodal=_check_if_multimodal(engine_name), **kwargs)
-        else:
-             return ChatGPT5(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)
     elif "claude" in engine_name:
         from .anthropic import ChatAnthropic
         return ChatAnthropic(model_string=engine_name, is_multimodal=_check_if_multimodal(engine_name), **kwargs)
